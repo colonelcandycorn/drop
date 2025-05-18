@@ -14,7 +14,6 @@ panic-halt = "1.0.0"
 rtt-target = { version = "0.6.1", features = ["log"] }
 lsm303agr = "1.1.0"
 micromath = "2.1.0"
-embassy = "0.0.0"
 
 [features]
 default = [

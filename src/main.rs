@@ -85,31 +85,34 @@ fn main() -> ! {
         .set_accel_mode_and_odr(&mut timer, AccelMode::Normal, AccelOutputDataRate::Hz50)
         .unwrap();
 
+    let mut delay = Delay::new(board.SYST);
     let mut was_falling = true;
-    let mut count = 0u32;
     loop {
-        count = count.wrapping_add(1);
         let mut is_falling = false;
         if let Some((x, y, z)) = get_data(&mut sensor) {
             let acc = calcuate_magnitude_of_acceleration(x, y, z);
 
             log::info!("acc <{}>", acc);
 
-            if acc < 0.5 {
+            if acc < 0.7 {
                 is_falling = true;
             } else if acc > 1.0 {
                 is_falling = false;
             }
         }
 
-        if is_falling && count % 5 == 0 {
+        if is_falling {
             SPEAKER.with_lock(|opt| {
                 if let Some(speaker) = opt {
-                    let _ = speaker.toggle();
+                    for _ in 0..200 {
+                    speaker.set_high().unwrap();
+                    delay.delay_us(500);
+                    speaker.set_low().unwrap();
+                    delay.delay_us(500);
+                    }
                 }
             });
         }
-
         DISPLAY.with_lock(|display| {
             log::info!("is falling <{}> was_falling <{}>", is_falling, was_falling);
             if is_falling && !was_falling {
@@ -128,7 +131,7 @@ fn main() -> ! {
                 was_falling = false;
             }
         });
-        timer2.delay_us(500u32);
+        timer2.delay_ms(5u32);
     }
 }
 
