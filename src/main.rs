@@ -1,29 +1,33 @@
 #![no_std]
 #![no_main]
 
-use rtt_target::rtt_init_log;
 use panic_halt as _;
+use rtt_target::rtt_init_log;
 
-use micromath::F32Ext;
-use cortex_m_rt::entry;
 use cortex_m::interrupt::free;
-use embedded_hal::{delay::DelayNs, digital::{OutputPin, StatefulOutputPin}};
+use cortex_m_rt::entry;
+use critical_section_lock_mut::LockMut;
+use embedded_hal::{
+    delay::DelayNs,
+    digital::{OutputPin, StatefulOutputPin},
+};
 use lsm303agr::{
     interface::I2cInterface, mode::MagOneShot, AccelMode, AccelOutputDataRate, Lsm303agr,
 };
 use microbit::{
-    display::nonblocking::{
-        BitImage, Display
+    display::nonblocking::{BitImage, Display},
+    hal::{
+        delay::Delay,
+        gpio::{p0::P0_00, Level, Output, PushPull},
+        Timer,
     },
-    hal::{delay::Delay, gpio::{p0::P0_00, Output, Level, PushPull}, Timer}
 };
-use critical_section_lock_mut::LockMut;
+use micromath::F32Ext;
 
 use microbit::{
     hal::twim,
-    pac::{self, interrupt, twim0::frequency::FREQUENCY_A, TWIM0, TIMER1, TIMER4},
+    pac::{self, interrupt, twim0::frequency::FREQUENCY_A, TIMER1, TIMER4, TWIM0},
 };
-
 
 static DISPLAY: LockMut<Display<TIMER1>> = LockMut::new();
 static SPEAKER: LockMut<Option<P0_00<Output<PushPull>>>> = LockMut::new();
@@ -105,10 +109,10 @@ fn main() -> ! {
             SPEAKER.with_lock(|opt| {
                 if let Some(speaker) = opt {
                     for _ in 0..200 {
-                    speaker.set_high().unwrap();
-                    delay.delay_us(500);
-                    speaker.set_low().unwrap();
-                    delay.delay_us(500);
+                        speaker.set_high().unwrap();
+                        delay.delay_us(500);
+                        speaker.set_low().unwrap();
+                        delay.delay_us(500);
                     }
                 }
             });
@@ -141,11 +145,11 @@ fn get_data(sensor: &mut Sensor) -> Option<(f32, f32, f32)> {
     if sensor.accel_status().unwrap().xyz_new_data() {
         let data = sensor.acceleration().unwrap();
         log::info!("x {} y {} z {}", data.x_mg(), data.y_mg(), data.z_mg());
-        return Some(
-            (data.x_mg() as f32 / 1000.0,
-             data.y_mg() as f32 / 1000.0,
-             data.z_mg() as f32 / 1000.0)
-        );
+        return Some((
+            data.x_mg() as f32 / 1000.0,
+            data.y_mg() as f32 / 1000.0,
+            data.z_mg() as f32 / 1000.0,
+        ));
     }
 
     None
