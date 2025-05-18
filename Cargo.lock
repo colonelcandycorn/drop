@@ -118,6 +118,7 @@ dependencies = [
  "log",
  "lsm303agr",
  "microbit-v2",
+ "micromath",
  "panic-halt",
  "rtt-target",
 ]
@@ -280,6 +281,12 @@ checksum = "6dbd4bb53d65a8b1a7e133d5d08673e17f39d940f485c2ff9c91350a0ff78958"
 dependencies = [
  "microbit-common",
 ]
+
+[[package]]
+name = "micromath"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c3c8dda44ff03a2f238717214da50f65d5a53b45cd213a7370424ffdb6fae815"
 
 [[package]]
 name = "nb"
