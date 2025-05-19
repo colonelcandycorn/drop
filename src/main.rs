@@ -4,7 +4,6 @@
 use panic_halt as _;
 use rtt_target::rtt_init_log;
 
-use cortex_m::interrupt::free;
 use cortex_m_rt::entry;
 use critical_section_lock_mut::LockMut;
 use embedded_hal::{
@@ -26,7 +25,7 @@ use micromath::F32Ext;
 
 use microbit::{
     hal::twim,
-    pac::{self, interrupt, twim0::frequency::FREQUENCY_A, TIMER1, TIMER4, TWIM0},
+    pac::{self, interrupt, twim0::frequency::FREQUENCY_A, TIMER1, TWIM0},
 };
 
 static DISPLAY: LockMut<Display<TIMER1>> = LockMut::new();
@@ -56,12 +55,11 @@ fn main() -> ! {
 
     let mut timer = Timer::new(board.TIMER0);
     let mut timer2 = Timer::new(board.TIMER3);
-    let mut timer3 = Timer::new(board.TIMER4);
 
     let display = Display::new(board.TIMER1, board.display_pins);
     DISPLAY.init(display);
 
-    let mut speaker = board.speaker_pin.into_push_pull_output(Level::Low);
+    let speaker = board.speaker_pin.into_push_pull_output(Level::Low);
     SPEAKER.init(Some(speaker));
 
     unsafe {
