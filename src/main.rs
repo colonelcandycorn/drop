@@ -96,7 +96,7 @@ fn main() -> ! {
 
             log::info!("acc <{}>", acc);
 
-            if acc < 0.7 {
+            if acc < 0.5 {
                 is_falling = true;
             } else if acc > 1.0 {
                 is_falling = false;
@@ -133,7 +133,7 @@ fn main() -> ! {
                 was_falling = false;
             }
         });
-        timer2.delay_ms(5u32);
+        timer2.delay_ms(50u32);
     }
 }
 
@@ -170,7 +170,6 @@ fn TIMER4() {
     log::info!("Entering Timer 4 interrupt");
     SPEAKER.with_lock(|opt| {
         if let Some(speaker) = opt {
-            // Simply toggle the state each interrupt
             let _ = speaker.toggle();
             let mut speaker_value = "Low";
             if speaker.is_set_high().unwrap() {
