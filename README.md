@@ -2,7 +2,7 @@
 ## Creator: Sarah Dylan
 ## What I did
 
-I started by tackling the magnetometer. The (example code)[https://github.com/nrf-rs/microbit/blob/main/examples/magnetometer/src/main.rs] from the microbit v2 crate's example folder was really helpful in setting this up. I started by just outputting the x, y, and z like we did in class. Then I moved on to the acceleration. I originally was having a hard time getting the 0.25 value to work so I thought that maybe adding a sqrt function would help. I found a crate to do that and then change the reading to < 0.5, but this made no difference. When I was testing the code I bumped it up to 0.7 and it worked fine, but I changed it back to 0.5 because that was part of the requirements. 
+I started by tackling the magnetometer. The [example code](https://github.com/nrf-rs/microbit/blob/main/examples/magnetometer/src/main.rs) from the microbit v2 crate's example folder was really helpful in setting this up. I started by just outputting the x, y, and z like we did in class. Then I moved on to the acceleration. I originally was having a hard time getting the 0.25 value to work so I thought that maybe adding a sqrt function would help. I found a crate to do that and then change the reading to < 0.5, but this made no difference. When I was testing the code I bumped it up to 0.7 and it worked fine, but I changed it back to 0.5 because that was part of the requirements. 
 
 Once I was able to detect when the board was falling, I moved on to the non-blocking display. The example from class was more than enough to get this done quickly.
 
